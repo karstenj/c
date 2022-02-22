@@ -52,17 +52,20 @@ execute_test () {
 copy_exercises () {
     # Copies exercises from a given directory in ./exercises to the same
     # directory in ./build
-    local directory="${1}"
-    shift
-    echo "Copying ${directory} exercises ${*}"
-    mkdir -p "build/${directory}"
-    if [ $# -gt 0 ]
+    if [ $# -gt 0 ] && [ -d "${1}" ]
     then
-        cd "exercises/${directory}"
-        cp -r "$@" "../../build/${directory}/"
-        cd "../.."
-    else
-        cp -r "exercises/${directory}" "build"
+        local directory="${1}"
+        shift
+        echo "Copying ${directory} exercises ${*}"
+        mkdir -p "build/${directory}"
+        if [ $# -gt 0 ]
+        then
+            cd "exercises/${directory}"
+            cp -r "$@" "../../build/${directory}/"
+            cd "../.."
+        else
+            cp -r "exercises/${directory}" "build"
+        fi
     fi
 }
 
@@ -74,7 +77,6 @@ execute_tests () {
         for exercise in *
         do
             execute_test "${exercise}"
-            # echo "Executing ${exercise}"
         done
         popd > /dev/null
     fi
